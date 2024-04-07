@@ -5,7 +5,6 @@ const fs = require('fs');
 const http = require('http');
 const socketio = require('socket.io');
 
-
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
@@ -13,11 +12,7 @@ const io = socketio(server);
 // Middleware voor het verwerken van formuliergegevens
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Stel de weergave-engine in op ejs
-app.set('views', path.join(__dirname, 'templates'));
-app.set('view engine', 'html');
-
-// Statische bestanden serveren vanuit de "public" map
+// Statische bestanden serveren vanuit de "templates" map
 app.use(express.static(path.join(__dirname, 'templates')));
 
 // Pad naar JSON-bestanden voor gebruikers en berichten
@@ -26,11 +21,11 @@ const messagesFilePath = path.join(__dirname, 'data', 'messages.json');
 
 // Routes
 app.get('/', (req, res) => {
-    res.render('index', { title: 'Home' });
+    res.sendFile(path.join(__dirname, 'templates', 'index.html'));
 });
 
 app.get('/signup', (req, res) => {
-    res.render('signup', { title: 'Sign Up' });
+    res.sendFile(path.join(__dirname, 'templates', 'signup.html'));
 });
 
 app.post('/signup', (req, res) => {
@@ -44,7 +39,7 @@ app.post('/signup', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-    res.render('login', { title: 'Log In' });
+    res.sendFile(path.join(__dirname, 'templates', 'login.html'));
 });
 
 app.post('/login', (req, res) => {
@@ -56,7 +51,7 @@ app.post('/login', (req, res) => {
 app.get('/chat', (req, res) => {
     // Laad de gebruikerslijst en render de chatpagina
     const users = JSON.parse(fs.readFileSync(usersFilePath));
-    res.render('chat', { title: 'Chat', users });
+    res.sendFile(path.join(__dirname, 'templates', 'chat.html'));
 });
 
 app.post('/chat', (req, res) => {

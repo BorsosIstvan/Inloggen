@@ -18,7 +18,7 @@ app.set('views', path.join(__dirname, 'templates'));
 app.set('view engine', 'html');
 
 // Statische bestanden serveren vanuit de "public" map
-app.use(express.static(path.join(__dirname, 'static')));
+app.use(express.static(path.join(__dirname, 'templates')));
 
 // Pad naar JSON-bestanden voor gebruikers en berichten
 const usersFilePath = path.join(__dirname, 'data', 'users.json');

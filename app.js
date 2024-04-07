@@ -15,8 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Stel de weergave-engine in op ejs
 app.set('views', path.join(__dirname, 'templates'));
-//app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+app.set('view engine', 'html');
 
 // Statische bestanden serveren vanuit de "public" map
 app.use(express.static(path.join(__dirname, 'public')));

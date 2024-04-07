@@ -13,7 +13,7 @@ const io = socketio(server);
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Statische bestanden serveren vanuit de "templates" map
-app.use(express.static(path.join(__dirname, 'templates')));
+app.use(express.static(path.join(__dirname, 'static')));
 
 // Pad naar JSON-bestanden voor gebruikers en berichten
 const usersFilePath = path.join(__dirname, 'data', 'users.json');

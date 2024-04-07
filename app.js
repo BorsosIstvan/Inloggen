@@ -1,10 +1,24 @@
 const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
+const fs = require('fs'); // Importeer de fs-module
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
+
+// Functie om berichten naar het JSON-bestand te schrijven
+function saveMessage(message) {
+  fs.readFile(__dirname + 'data' + 'messages.json', (err, data) => {
+    if (err) throw err;
+    let messages = JSON.parse(data);
+    messages.push(message);
+    fs.writeFile(__dirname + 'data' + 'messages.json', JSON.stringify(messages), (err) => {
+      if (err) throw err;
+      console.log('Bericht opgeslagen in messages.json');
+    });
+  });
+}
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/templates' + '/index.html');
@@ -23,6 +37,7 @@ io.on('connection', (socket) => {
   socket.on('message', (message) => {
     // Stuur het bericht naar alle verbonden gebruikers
     io.emit('message', message);
+    saveMessage(message); // Roep de functie aan om het bericht op te slaan
   });
 
   // Luister naar inloggegevens van de gebruiker

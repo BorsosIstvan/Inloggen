@@ -12,56 +12,63 @@ const io = socketio(server);
 // Middleware voor het verwerken van formuliergegevens
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Statische bestanden serveren vanuit de "templates" map
+// Stel de weergave-engine in op ejs
+app.set('views', path.join(__dirname, 'templates'));
+app.set('view engine', 'html');
+
+// Statische bestanden serveren vanuit de "public" map
 app.use(express.static(path.join(__dirname, 'static')));
 
 // Pad naar JSON-bestanden voor gebruikers en berichten
 const usersFilePath = path.join(__dirname, 'data', 'users.json');
 const messagesFilePath = path.join(__dirname, 'data', 'messages.json');
 
+// Functie om JSON-bestanden veilig te lezen
+function readJsonFile(filePath) {
+    try {
+        const jsonData = fs.readFileSync(filePath, 'utf8');
+        return JSON.parse(jsonData);
+    } catch (error) {
+        console.error('Fout bij het lezen van JSON-bestand:', error.message);
+        return null;
+    }
+}
+
 // Routes
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'templates', 'index.html'));
+    res.render('index', { title: 'Home' });
 });
 
 app.get('/signup', (req, res) => {
-    res.sendFile(path.join(__dirname, 'templates', 'signup.html'));
+    res.render('signup', { title: 'Sign Up' });
 });
 
 app.post('/signup', (req, res) => {
-    // Verwerk het aanmeldingsverzoek hier
-    // Voeg gebruikersgegevens toe aan JSON-bestand
     const newUser = req.body;
-    const users = JSON.parse(fs.readFileSync(usersFilePath));
+    const users = readJsonFile(usersFilePath) || [];
     users.push(newUser);
     fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
     res.redirect('/');
 });
 
 app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname, 'templates', 'login.html'));
+    res.render('login', { title: 'Log In' });
 });
 
 app.post('/login', (req, res) => {
-    // Verwerk het inlogverzoek hier
-    // Voer de nodige validatie en logica uit
     res.redirect('/');
 });
 
 app.get('/chat', (req, res) => {
-    // Laad de gebruikerslijst en render de chatpagina
-    const users = JSON.parse(fs.readFileSync(usersFilePath));
-    res.sendFile(path.join(__dirname, 'templates', 'chat.html'));
+    const users = readJsonFile(usersFilePath) || [];
+    res.render('chat', { title: 'Chat', users });
 });
 
 app.post('/chat', (req, res) => {
-    // Verwerk het bericht en voeg het toe aan de berichtenlijst
-    // Voeg bericht toe aan JSON-bestand
     const newMessage = req.body;
-    const messages = JSON.parse(fs.readFileSync(messagesFilePath));
+    const messages = readJsonFile(messagesFilePath) || [];
     messages.push(newMessage);
     fs.writeFileSync(messagesFilePath, JSON.stringify(messages, null, 2));
-    // Stuur het nieuwe bericht naar alle clients via Socket.IO
     io.emit('new_message', newMessage);
     res.redirect('/chat');
 });

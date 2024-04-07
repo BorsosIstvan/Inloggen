@@ -5,7 +5,7 @@ const fs = require('fs');
 const socketio = require('socket.io');
 
 const app = express();
-const server = app.listen(3000);
+const server = http.createServer(app);
 const io = socketio(server);
 
 // Middleware voor het verwerken van formuliergegevens

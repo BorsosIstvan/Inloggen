@@ -9,11 +9,11 @@ const io = socketIO(server);
 
 // Functie om berichten naar het JSON-bestand te schrijven
 function saveMessage(message) {
-  fs.readFile(__dirname + 'data' + 'messages.json', (err, data) => {
+  fs.readFile(__dirname + '/data' + '/messages.json', (err, data) => {
     if (err) throw err;
     let messages = JSON.parse(data);
     messages.push(message);
-    fs.writeFile(__dirname + 'data' + 'messages.json', JSON.stringify(messages), (err) => {
+    fs.writeFile(__dirname + '/data' + '/messages.json', JSON.stringify(messages), (err) => {
       if (err) throw err;
       console.log('Bericht opgeslagen in messages.json');
     });

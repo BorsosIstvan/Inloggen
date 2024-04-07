@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Chat{% endblock %}
+
+{% block content %}
+<h2>Welcome to the Chat Room, {{ username }}</h2>
+<div id="message-container">
+    {% for message in messages %}
+    <div class="message">
+        <p><strong>{{ message.sender }}</strong>: {{ message.text }}</p>
+    </div>
+    {% endfor %}
+</div>
+<form id="message-form">
+    <input type="text" id="message-input" placeholder="Type your message here...">
+    <button type="submit">Send</button>
+</form>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+{% endblock %}

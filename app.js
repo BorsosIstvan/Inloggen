@@ -1,35 +1,17 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const http = require('http').createServer(app);
 
-app.set('view engine', 'ejs');
-app.use(express.urlencoded({ extended: true }));
+// Serve static files from the 'static' directory
+app.use(express.static('static'));
 
-let currentUser = '';
-
-// Index pagina
+// Route for the home page
 app.get('/', (req, res) => {
-    res.render('index');
+    res.sendFile(__dirname + '/templates/index.html');
 });
 
-// Inloggen
-app.post('/login', (req, res) => {
-    const { username } = req.body;
-    currentUser = username;
-    res.redirect('/klats');
-});
-
-// Klats pagina
-app.get('/klats', (req, res) => {
-    res.render('klats', { username: currentUser });
-});
-
-// Uitloggen
-app.post('/logout', (req, res) => {
-    currentUser = '';
-    res.redirect('/');
-});
-
-app.listen(port, () => {
-    console.log(`Klats app luistert op http://localhost:${port}`);
+// Start the server
+const PORT = process.env.PORT || 3000;
+http.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
